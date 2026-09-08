@@ -639,6 +639,13 @@ class DisasterDelivery(models.Model):
         ondelete="restrict",
         domain="[('incident_id', '=', incident_id)]",
     )
+    @api.onchange("request_id")
+    def _onchange_request_id(self):
+        if self.request_id:
+            self.incident_id = self.request_id.incident_id.id
+            if self.request_id.camp_id:
+                self.camp_id = self.request_id.camp_id.id
+
     state = fields.Selection(
         [("pending", "Pending"), ("dispatched", "Dispatched"), ("delivered", "Delivered")],
         default="pending",
