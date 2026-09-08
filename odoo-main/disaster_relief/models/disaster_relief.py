@@ -298,7 +298,7 @@ class DisasterResource(models.Model):
 class DisasterEmergencyRequest(models.Model):
     _name = "dr.emergency.request"
     _description = "Emergency Resource Request"
-    _order = "priority desc, request_date desc, id desc"
+    _order = "priority_score desc, priority desc, request_date desc, id desc"
 
     name = fields.Char(required=True, copy=False, default="New", index=True)
     incident_id = fields.Many2one(
@@ -343,10 +343,31 @@ class DisasterEmergencyRequest(models.Model):
         "dr.emergency.request.line", "request_id", string="Requested Resources"
     )
     delivery_ids = fields.One2many("dr.delivery", "request_id")
+    priority_score = fields.Integer(
+        string="Priority Score",
+        compute="_compute_priority_score",
+        store=True,
+        help="Smart priority score based on urgency, population, and waiting time.",
+    )
     total_requested = fields.Float(compute="_compute_totals", store=True)
     total_allocated = fields.Float(compute="_compute_totals", store=True)
     total_delivered = fields.Float(compute="_compute_totals", store=True)
     delivery_count = fields.Integer(compute="_compute_totals", store=True)
+
+    @api.depends("priority", "request_date", "affected_area_id.population", "camp_id.occupancy")
+    def _compute_priority_score(self):
+        priority_weights = {"critical": 40, "high": 30, "normal": 20, "low": 10}
+        now = fields.Datetime.now()
+        for record in self:
+            score = priority_weights.get(record.priority, 10)
+            # Add population weight (1 pt per 100 affected people, max 30 pts)
+            pop = (record.affected_area_id.population or record.camp_id.occupancy or 0)
+            score += min(30, int(pop / 100))
+            # Add waiting time weight (1 pt per hour waiting, max 30 pts)
+            if record.request_date:
+                hours_waiting = int((now - record.request_date).total_seconds() / 3600)
+                score += min(30, max(0, hours_waiting))
+            record.priority_score = score
 
     @api.model_create_multi
     def create(self, vals_list):
