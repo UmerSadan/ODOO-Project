@@ -609,11 +609,16 @@ class DisasterVolunteerTeam(models.Model):
     )
     notes = fields.Text()
 
+    @api.onchange("leader_id")
+    def _onchange_leader_id(self):
+        if self.leader_id and self.leader_id not in self.member_ids:
+            self.member_ids = [(4, self.leader_id.id)]
+
     @api.constrains("leader_id", "member_ids")
     def _check_leader(self):
         for record in self:
             if record.leader_id and record.leader_id not in record.member_ids:
-                raise ValidationError(_("The team leader must be one of the team members."))
+                record.write({"member_ids": [(4, record.leader_id.id)]})
 
 
 class DisasterDelivery(models.Model):
