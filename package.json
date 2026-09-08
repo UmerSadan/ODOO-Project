@@ -1,0 +1,16 @@
+{
+  "name": "disaster-management-system",
+  "version": "1.0.0",
+  "description": "Disaster Relief Resource Management System for Odoo",
+  "scripts": {
+    "dev": "run.bat",
+    "start": "run.bat"
+  },
+  "keywords": [
+    "odoo",
+    "disaster-management",
+    "disaster-relief"
+  ],
+  "author": "Umer Sadan",
+  "license": "LGPL-3.0"
+}
