@@ -1,24 +1,20 @@
 @echo off
 setlocal
-echo ===================================================
-echo   Starting Disaster Relief Management Odoo Server
-echo ===================================================
+echo =========================================================================
+echo   Disaster Relief Management Odoo Server
+echo =========================================================================
+echo.
+echo   Direct App Links:
+echo   - Web Interface:   http://localhost:8069/web
+echo   - App Dashboard:   http://localhost:8069/web#action=disaster_relief.action_dr_dashboard
+echo   - Incidents View:  http://localhost:8069/web#action=disaster_relief.action_dr_incident
+echo   - Requests View:   http://localhost:8069/web#action=disaster_relief.action_dr_request
+echo.
+echo =========================================================================
 
 set ODOO_PY=S:\ODOO_Software\python\python.exe
 set ODOO_BIN=S:\ODOO_Software\server\odoo-bin
 set ODOO_CONF=S:\ODOO_Software\server\odoo.conf
 set PROJECT_ADDONS=%~dp0odoo-main
-
-echo Python:       %ODOO_PY%
-echo Server:       %ODOO_BIN%
-echo Custom Addon: %PROJECT_ADDONS%
-echo URL:          http://localhost:8069
-echo.
-echo Opening http://localhost:8069 in your web browser...
-echo Press Ctrl+C to stop the server anytime.
-echo ===================================================
-
-:: Automatically launch browser after 2 seconds
-start "" powershell -NoProfile -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:8069'"
 
 "%ODOO_PY%" "%ODOO_BIN%" -c "%ODOO_CONF%" --addons-path="S:\ODOO_Software\server\odoo\addons,S:\ODOO_Software\server\workshop,%PROJECT_ADDONS%" -d disaster_db -i disaster_relief -u disaster_relief --dev=all %*
