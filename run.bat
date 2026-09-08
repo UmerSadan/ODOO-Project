@@ -14,7 +14,11 @@ echo Server:       %ODOO_BIN%
 echo Custom Addon: %PROJECT_ADDONS%
 echo URL:          http://localhost:8069
 echo.
+echo Opening http://localhost:8069 in your web browser...
 echo Press Ctrl+C to stop the server anytime.
 echo ===================================================
 
-"%ODOO_PY%" "%ODOO_BIN%" -c "%ODOO_CONF%" --addons-path="S:\ODOO_Software\server\odoo\addons,S:\ODOO_Software\server\workshop,%PROJECT_ADDONS%" --dev=all %*
+:: Automatically launch browser after 2 seconds
+start "" powershell -NoProfile -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:8069'"
+
+"%ODOO_PY%" "%ODOO_BIN%" -c "%ODOO_CONF%" --addons-path="S:\ODOO_Software\server\odoo\addons,S:\ODOO_Software\server\workshop,%PROJECT_ADDONS%" -d disaster_db -i disaster_relief -u disaster_relief --dev=all %*
