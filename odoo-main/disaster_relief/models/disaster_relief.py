@@ -631,20 +631,20 @@ class DisasterDelivery(models.Model):
         "dr.emergency.request", required=True, ondelete="restrict", index=True
     )
     incident_id = fields.Many2one(
-        "dr.incident", required=True, ondelete="restrict", index=True
+        "dr.incident",
+        string="Incident",
+        related="request_id.incident_id",
+        store=True,
+        readonly=True,
+        index=True,
     )
     camp_id = fields.Many2one(
         "dr.relief.camp",
         string="Destination Camp",
-        ondelete="restrict",
-        domain="[('incident_id', '=', incident_id)]",
+        related="request_id.camp_id",
+        store=True,
+        readonly=True,
     )
-    @api.onchange("request_id")
-    def _onchange_request_id(self):
-        if self.request_id:
-            self.incident_id = self.request_id.incident_id.id
-            if self.request_id.camp_id:
-                self.camp_id = self.request_id.camp_id.id
 
     state = fields.Selection(
         [("pending", "Pending"), ("dispatched", "Dispatched"), ("delivered", "Delivered")],
@@ -662,19 +662,19 @@ class DisasterDelivery(models.Model):
         for vals in vals_list:
             if vals.get("name", "New") == "New":
                 vals["name"] = self.env["ir.sequence"].next_by_code("dr.delivery") or "New"
-            if vals.get("request_id") and not vals.get("incident_id"):
+            if vals.get("request_id"):
                 request = self.env["dr.emergency.request"].browse(vals["request_id"])
                 vals["incident_id"] = request.incident_id.id
-                vals.setdefault("camp_id", request.camp_id.id)
+                vals["camp_id"] = request.camp_id.id if request.camp_id else vals.get("camp_id")
         return super().create(vals_list)
 
     @api.constrains("request_id", "incident_id", "camp_id")
     def _check_relations(self):
         for record in self:
-            if record.request_id.incident_id != record.incident_id:
-                raise ValidationError(_("The delivery incident must match its request."))
-            if record.camp_id and record.camp_id.incident_id != record.incident_id:
-                raise ValidationError(_("The delivery camp must belong to the incident."))
+            if record.request_id and record.request_id.incident_id and record.incident_id != record.request_id.incident_id:
+                record.write({"incident_id": record.request_id.incident_id.id})
+            if record.request_id and record.request_id.camp_id and record.camp_id != record.request_id.camp_id:
+                record.write({"camp_id": record.request_id.camp_id.id})
 
     def action_mark_dispatched(self):
         for record in self:
