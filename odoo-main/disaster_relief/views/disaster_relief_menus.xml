@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Main application -->
+    <menuitem
+        id="menu_dr_root"
+        name="Disaster Relief"
+        web_icon="disaster_relief,static/description/icon.png"
+        groups="base.group_user"
+        sequence="10"/>
+
+    <!-- Dashboard -->
+    <menuitem
+        id="menu_dr_dashboard"
+        name="Dashboard"
+        parent="menu_dr_root"
+        action="action_dr_dashboard"
+        sequence="10"/>
+
+    <!-- Disaster Operations -->
+    <menuitem
+        id="menu_dr_operations"
+        name="Operations"
+        parent="menu_dr_root"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dr_incidents"
+        name="Incidents"
+        parent="menu_dr_operations"
+        action="action_dr_incident"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dr_areas"
+        name="Affected Areas"
+        parent="menu_dr_operations"
+        action="action_dr_area"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dr_camps"
+        name="Relief Camps"
+        parent="menu_dr_operations"
+        action="action_dr_camp"
+        sequence="30"/>
+
+    <!-- Resources -->
+    <menuitem
+        id="menu_dr_resources"
+        name="Resources"
+        parent="menu_dr_root"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_dr_resource_inventory"
+        name="Resources &amp; Inventory"
+        parent="menu_dr_resources"
+        action="action_dr_resource"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dr_requests"
+        name="Emergency Requests"
+        parent="menu_dr_resources"
+        action="action_dr_request"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dr_request_analytics"
+        name="Request Analytics"
+        parent="menu_dr_resources"
+        action="action_dr_request_graph"
+        sequence="30"/>
+
+    <!-- Volunteers -->
+    <menuitem
+        id="menu_dr_volunteers"
+        name="Volunteers"
+        parent="menu_dr_root"
+        sequence="40"/>
+
+    <menuitem
+        id="menu_dr_volunteer"
+        name="Volunteers"
+        parent="menu_dr_volunteers"
+        action="action_dr_volunteer"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dr_skills"
+        name="Volunteer Skills"
+        parent="menu_dr_volunteers"
+        action="action_dr_skill"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dr_teams"
+        name="Volunteer Teams"
+        parent="menu_dr_volunteers"
+        action="action_dr_team"
+        sequence="30"/>
+
+    <!-- Logistics -->
+    <menuitem
+        id="menu_dr_logistics"
+        name="Logistics"
+        parent="menu_dr_root"
+        sequence="50"/>
+
+    <menuitem
+        id="menu_dr_deliveries"
+        name="Deliveries"
+        parent="menu_dr_logistics"
+        action="action_dr_delivery"
+        sequence="10"/>
+
+</odoo>
